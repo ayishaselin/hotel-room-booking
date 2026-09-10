@@ -4,12 +4,14 @@ import { renderRooms } from "./ui/roomRenderer.js";
 import { validateDates } from "./utils/validation.js";
 import { getToday, calculateNights } from "./utils/dateUtils.js";
 import { calculateTotal } from "./utils/bookingUtils.js";
+import { showBookingSummary, hideBookingSummary } from "./ui/bookingSummary.js";
 
 
 const roomList = document.querySelector("#room-list");
 const checkInInput = document.querySelector("#check-in");
 const checkOutInput = document.querySelector("#check-out");
 const errorMessage = document.querySelector("#error-message");
+const bookingSummary = document.querySelector("#booking-summary");
 
 let selectedRoomCode = null;
 
@@ -35,10 +37,14 @@ function updateBooking() {
     const checkIn = checkInInput.value;
     const checkOut = checkOutInput.value;
 
-    const error = validateDates(checkIn, checkOut);
+    const dateError = validateDates(
+        checkIn,
+        checkOut
+    );
 
-    if (error) {
-        showError(error);
+    if (dateError) {
+        showError(dateError);
+        hideBookingSummary(bookingSummary);
         return;
     }
 
@@ -49,6 +55,8 @@ function updateBooking() {
     );
 
     if (!selectedRoom) {
+        showError("Please select a room.");
+        hideBookingSummary(bookingSummary);
         return;
     }
 
@@ -62,9 +70,14 @@ function updateBooking() {
         selectedRoom.pricePerNight
     );
 
-    console.log("Selected room:", selectedRoom.code);
-    console.log("Nights:", nights);
-    console.log("Total:", total);
+    showBookingSummary({
+        summaryElement: bookingSummary,
+        room: selectedRoom,
+        checkIn,
+        checkOut,
+        nights,
+        total
+    });
 }
 
 function handleRoomSelection(event) {

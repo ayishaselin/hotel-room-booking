@@ -19,7 +19,7 @@
                 for your stay.
             </p>
         </header>
- <!-- ------------------------->.
+ <!-- ------------------------->
         <section class="booking-section" aria-labelledby="stay-details-title">
 
     <h2 id="stay-details-title">Stay Details</h2>
@@ -56,16 +56,57 @@
     ></p>
 
 </section>
-<!-------------------------------------------->.
+<!-------------------------------------------->
 
         <section>
             <h2>Available Rooms</h2>
              <div id="room-list"></div>
         </section>
+<!-------------------------------------------->
 
-        <section>
-            <h2>Booking Summary</h2>
-        </section>
+        <section
+    id="booking-summary"
+    class="summary-section hidden"
+    aria-labelledby="summary-title"
+>
+    <h2 id="summary-title">Booking Summary</h2>
+
+    <div class="summary-details">
+
+        <div class="summary-row">
+            <span>Room</span>
+            <strong id="summary-room"></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Check-in</span>
+            <strong id="summary-check-in"></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Check-out</span>
+            <strong id="summary-check-out"></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Nights</span>
+            <strong id="summary-nights"></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Price per night</span>
+            <strong id="summary-price"></strong>
+        </div>
+
+    </div>
+
+    <div class="summary-total">
+        <span>Total</span>
+        <strong id="summary-total"></strong>
+    </div>
+</section>
+<!-------------------------------------------->
+
     </main>
 
     <script
