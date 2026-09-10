@@ -1,6 +1,13 @@
-export function renderRooms(rooms, container) {
-    container.innerHTML = rooms.map(room => `
-        <article class="room-card">
+export function renderRooms(rooms, container, selectedRoomCode = null) {
+    
+    container.innerHTML = rooms.map(room => {
+         const isSelected = room.code === selectedRoomCode;
+
+        return `
+    
+
+        <article class="room-card ${isSelected ? "selected" : " "}>
+
             <div class="room-info">
                 <span class="room-code">${room.code}</span>
                 <h3>${room.type}</h3>
@@ -15,9 +22,9 @@ export function renderRooms(rooms, container) {
                     type="button"
                     data-room-code="${room.code}"
                 >
-                    Select Room
+                    ${isSelected ? "Selected ✓" : "Select Room"}
                 </button>
             </div>
         </article>
-    `).join("");
+    `;}).join("");
 }
