@@ -1,7 +1,9 @@
 import { rooms } from "./data/rooms.js";
 import { renderRooms } from "./ui/roomRenderer.js";
-import { getToday } from "./utils/dateUtils.js";
+
 import { validateDates } from "./utils/validation.js";
+import { getToday, calculateNights } from "./utils/dateUtils.js";
+import { calculateTotal } from "./utils/bookingUtils.js";
 
 
 const roomList = document.querySelector("#room-list");
@@ -26,14 +28,14 @@ roomList.addEventListener("click", handleRoomSelection);
 
 
 function handleDateChange() {
+    updateBooking();
+}
 
+function updateBooking() {
     const checkIn = checkInInput.value;
     const checkOut = checkOutInput.value;
 
-    const error = validateDates(
-        checkIn,
-        checkOut
-    );
+    const error = validateDates(checkIn, checkOut);
 
     if (error) {
         showError(error);
@@ -41,6 +43,28 @@ function handleDateChange() {
     }
 
     clearError();
+
+    const selectedRoom = rooms.find(
+        room => room.code === selectedRoomCode
+    );
+
+    if (!selectedRoom) {
+        return;
+    }
+
+    const nights = calculateNights(
+        checkIn,
+        checkOut
+    );
+
+    const total = calculateTotal(
+        nights,
+        selectedRoom.pricePerNight
+    );
+
+    console.log("Selected room:", selectedRoom.code);
+    console.log("Nights:", nights);
+    console.log("Total:", total);
 }
 
 function handleRoomSelection(event) {
@@ -57,6 +81,8 @@ function handleRoomSelection(event) {
         roomList,
         selectedRoomCode
     );
+
+    updateBooking();
 }
 
 
