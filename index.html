@@ -55,13 +55,64 @@
         aria-live="polite"
     ></p>
 
+    <button
+        type="button"
+        id="search-rooms"
+        class="search-button"
+    >
+        Search Rooms
+    </button>
+
 </section>
 <!-------------------------------------------->
+<section
+    id="rooms-section"
+    class="booking-section hidden"
+    aria-labelledby="rooms-title"
+>
+    <h2 id="rooms-title">Available Rooms</h2>
 
-        <section>
-            <h2>Available Rooms</h2>
-             <div id="room-list"></div>
-        </section>
+    <div class="room-filters">
+
+        <div class="filter-group">
+            <label for="room-type-filter">
+                Room Type
+            </label>
+
+            <select id="room-type-filter">
+                <option value="all">All Room Types</option>
+                <option value="Deluxe Room">Deluxe Room</option>
+                <option value="Executive Suite">Executive Suite</option>
+                <option value="Family Room">Family Room</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="guest-filter">
+                Guests
+            </label>
+
+            <select id="guest-filter">
+                <option value="all">Any Number</option>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4 Guests</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div id="room-list"></div>
+
+    <p
+        id="no-rooms-message"
+        class="no-rooms-message hidden"
+    >
+        No rooms match your selected filters.
+    </p>
+
+</section>
 <!-------------------------------------------->
 
         <section

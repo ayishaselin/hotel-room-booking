@@ -1,39 +1,88 @@
 import { rooms } from "./data/rooms.js";
 import { renderRooms } from "./ui/roomRenderer.js";
-
-import { validateDates } from "./utils/validation.js";
-import { getToday, calculateNights } from "./utils/dateUtils.js";
+import { getToday, calculateNights} from "./utils/dateUtils.js";
 import { calculateTotal } from "./utils/bookingUtils.js";
+import { validateDates } from "./utils/validation.js";
 import { showBookingSummary, hideBookingSummary } from "./ui/bookingSummary.js";
 
+const roomTypeFilter = document.querySelector("#room-type-filter");
+const guestFilter = document.querySelector("#guest-filter");
+const noRoomsMessage =  document.querySelector("#no-rooms-message");
 
 const roomList = document.querySelector("#room-list");
+const roomsSection = document.querySelector("#rooms-section");
 const checkInInput = document.querySelector("#check-in");
 const checkOutInput = document.querySelector("#check-out");
-const errorMessage = document.querySelector("#error-message");
-const bookingSummary = document.querySelector("#booking-summary");
+const searchRoomsButton = document.querySelector("#search-rooms");
+const errorMessage =  document.querySelector("#error-message");
+const bookingSummary =  document.querySelector("#booking-summary");
 
 let selectedRoomCode = null;
+let visibleRooms = [];
 
-/* initial date setup */
+/* Initial Setup */
 
 const today = getToday();
 
 checkInInput.min = today;
 checkOutInput.min = today;
-renderRooms(rooms, roomList, selectedRoomCode);
+
+roomsSection.classList.add("hidden");
+
+hideBookingSummary(bookingSummary);
 
 
-checkInInput.addEventListener("change", handleDateChange);
-checkOutInput.addEventListener("change", handleDateChange);
-roomList.addEventListener("click", handleRoomSelection);
+checkInInput.addEventListener(
+    "change",
+    handleDateChange
+);
+
+checkOutInput.addEventListener(
+    "change",
+    handleDateChange
+);
+
+searchRoomsButton.addEventListener(
+    "click",
+    handleSearchRooms
+);
+
+roomList.addEventListener(
+    "click",
+    handleRoomSelection
+);
+
+roomTypeFilter.addEventListener(
+ "change",
+    handleFilterChange
+);
+
+guestFilter.addEventListener(
+    "change",
+    handleFilterChange
+);
 
 
 function handleDateChange() {
-    updateBooking();
+    const checkIn = checkInInput.value;
+
+    if (checkIn) {
+        checkOutInput.min = checkIn;
+    } else {
+        checkOutInput.min = getToday();
+    }
+
+    clearError();
+
+    roomsSection.classList.add("hidden");
+
+    selectedRoomCode = null;
+
+    hideBookingSummary(bookingSummary);
 }
 
-function updateBooking() {
+
+function handleSearchRooms() {
     const checkIn = checkInInput.value;
     const checkOut = checkOutInput.value;
 
@@ -44,19 +93,71 @@ function updateBooking() {
 
     if (dateError) {
         showError(dateError);
+
+        roomsSection.classList.add("hidden");
+
         hideBookingSummary(bookingSummary);
+
         return;
     }
 
+
     clearError();
+
+    selectedRoomCode = null;
+    visibleRooms = rooms;
+    roomTypeFilter.value = "all";
+guestFilter.value = "all";
+
+    renderRooms(
+        rooms,
+        roomList,
+        selectedRoomCode
+    );
+
+    roomsSection.classList.remove("hidden");
+
+    hideBookingSummary(bookingSummary);
+}
+
+
+function handleRoomSelection(event) {
+    const button =
+        event.target.closest("[data-room-code]");
+
+    if (!button) {
+        return;
+    }
+
+    const roomCode =
+        button.dataset.roomCode;
+
+    if (roomCode === selectedRoomCode) {
+        return;
+    }
+
+    selectedRoomCode = roomCode;
+
+    renderRooms(
+    visibleRooms,
+    roomList,
+    selectedRoomCode
+);
+
+   
+    updateBooking();
+}
+
+
+function updateBooking() {
+    const checkIn = checkInInput.value;
+    const checkOut = checkOutInput.value;
 
     const selectedRoom = rooms.find(
         room => room.code === selectedRoomCode
     );
 
     if (!selectedRoom) {
-        showError("Please select a room.");
-        hideBookingSummary(bookingSummary);
         return;
     }
 
@@ -80,29 +181,52 @@ function updateBooking() {
     });
 }
 
-function handleRoomSelection(event) {
-    const button = event.target.closest("[data-room-code]");
+function handleFilterChange() {
+    const roomType = roomTypeFilter.value;
+    const guests = guestFilter.value;
 
-    if (!button) {
-        return;
+    visibleRooms = rooms.filter(room => {
+
+        const matchesRoomType =
+            roomType === "all" ||
+            room.type === roomType;
+
+        const matchesGuests =
+            guests === "all" ||
+            room.maxGuests >= Number(guests);
+
+        return matchesRoomType && matchesGuests;
+    });
+
+
+    const selectedRoomStillVisible =
+        visibleRooms.some(
+            room => room.code === selectedRoomCode
+        );
+
+    if (!selectedRoomStillVisible) {
+        selectedRoomCode = null;
+        hideBookingSummary(bookingSummary);
     }
 
-    selectedRoomCode = button.dataset.roomCode;
-
     renderRooms(
-        rooms,
+        visibleRooms,
         roomList,
         selectedRoomCode
     );
 
-    updateBooking();
+    if (visibleRooms.length === 0) {
+        noRoomsMessage.classList.remove("hidden");
+    } else {
+        noRoomsMessage.classList.add("hidden");
+    }
 }
-
 
 function showError(message) {
     errorMessage.textContent = message;
     errorMessage.classList.add("visible");
 }
+
 
 function clearError() {
     errorMessage.textContent = "";
