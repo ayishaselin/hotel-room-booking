@@ -15,36 +15,40 @@
         <h1>Hotel Room Booking</h1>
         <p>Select your dates and choose the perfect room for your stay.</p>
       </header>
-      <!-- ------------------------->
+    
       <section class="booking-section" aria-labelledby="stay-details-title">
-        <h2 id="stay-details-title">Stay Details</h2>
+    <h2 id="stay-details-title">Stay Details</h2>
 
-        <div class="date-fields">
-          <div class="form-group">
+    <div class="date-fields">
+
+        <div class="form-group">
             <label for="check-in">Check-in</label>
-
             <input type="date" id="check-in" name="check-in" />
-          </div>
-
-          <div class="form-group">
-            <label for="check-out">Check-out</label>
-
-            <input type="date" id="check-out" name="check-out" />
-          </div>
         </div>
 
-        <p
-          id="error-message"
-          class="error-message"
-          role="alert"
-          aria-live="polite"
-        ></p>
+        <div class="form-group">
+            <label for="check-out">Check-out</label>
+            <input type="date" id="check-out" name="check-out" />
+        </div>
 
-        <button type="button" id="search-rooms" class="search-button">
-          Search Rooms
+        <button
+            type="button"
+            id="search-rooms"
+            class="search-button"
+        >
+            Search Rooms
         </button>
-      </section>
-      <!-------------------------------------------->
+
+    </div>
+
+    <p
+        id="error-message"
+        class="error-message"
+        role="alert"
+        aria-live="polite"
+    ></p>
+</section>
+      
       <section
         id="rooms-section"
         class="booking-section hidden"
@@ -83,48 +87,10 @@
           No rooms match your selected filters.
         </p>
       </section>
-      <!-------------------------------------------->
+ 
 
-      <section
-        id="booking-summary"
-        class="summary-section hidden"
-        aria-labelledby="summary-title"
-      >
-        <h2 id="summary-title">Booking Summary</h2>
-
-        <div class="summary-details">
-          <div class="summary-row">
-            <span>Room</span>
-            <strong id="summary-room"></strong>
-          </div>
-
-          <div class="summary-row">
-            <span>Check-in</span>
-            <strong id="summary-check-in"></strong>
-          </div>
-
-          <div class="summary-row">
-            <span>Check-out</span>
-            <strong id="summary-check-out"></strong>
-          </div>
-
-          <div class="summary-row">
-            <span>Nights</span>
-            <strong id="summary-nights"></strong>
-          </div>
-
-          <div class="summary-row">
-            <span>Price per night</span>
-            <strong id="summary-price"></strong>
-          </div>
-        </div>
-
-        <div class="summary-total">
-          <span>Total</span>
-          <strong id="summary-total"></strong>
-        </div>
-      </section>
-      <!-------------------------------------------->
+      
+      
     </main>
 
     <script type="module" src="./js/app.js"></script>

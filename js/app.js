@@ -15,7 +15,6 @@ const searchRoomsButton = document.querySelector("#search-rooms");
 const errorMessage = document.querySelector("#error-message");
 
 let selectedRoomCode = null;
-
 let visibleRooms = [];
 
 /* Initial Setup */
@@ -67,6 +66,7 @@ function handleSearchRooms() {
   visibleRooms = rooms;
   roomTypeFilter.value = "all";
   guestFilter.value = "all";
+  noRoomsMessage.classList.add("hidden");
 
   renderRooms(visibleRooms, roomList, selectedRoomCode);
 
@@ -93,9 +93,7 @@ function getBookingDetails() {
   }
 
   const nights = calculateNights(checkIn, checkOut);
-
   const selectedRoom = rooms.find((room) => room.code === selectedRoomCode);
-
   const total = selectedRoom
     ? calculateTotal(nights, selectedRoom.pricePerNight)
     : 0;
@@ -111,6 +109,8 @@ function getBookingDetails() {
 
 
 }
+
+
 function handleRoomSelection(event) {
   const button = event.target.closest("[data-room-code]");
 
@@ -133,15 +133,16 @@ function handleRoomSelection(event) {
   renderRooms(visibleRooms, roomList, selectedRoomCode, getBookingDetails());
 }
 
+
+
+
 function handleFilterChange() {
   const roomType = roomTypeFilter.value;
   const guests = guestFilter.value;
 
   visibleRooms = rooms.filter((room) => {
     const matchesRoomType = roomType === "all" || room.type === roomType;
-
     const matchesGuests = guests === "all" || room.maxGuests >= Number(guests);
-
     return matchesRoomType && matchesGuests;
   });
 

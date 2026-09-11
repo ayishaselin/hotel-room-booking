@@ -1,15 +1,15 @@
 import { formatDate } from "../utils/dateUtils.js";
 export function renderRooms(
-  rooms,
-  container,
-  selectedRoomCode = null,
-  bookingDetails = {},
+    rooms,
+    container,
+    selectedRoomCode = null,
+    bookingDetails = {},
 ) {
-  container.innerHTML = rooms
-    .map((room) => {
-      const isSelected = room.code === selectedRoomCode;
+    container.innerHTML = rooms
+        .map((room) => {
+            const isSelected = room.code === selectedRoomCode;
 
-      return `
+            return `
             <article class="room-card ${isSelected ? "selected" : ""}">
 
                 <div class="room-info">
@@ -34,35 +34,32 @@ export function renderRooms(
                     </button>
                 </div>
 
-                ${
-                  isSelected
+                ${isSelected
                     ? `
-    <div class="room-summary">
-        <div class="room-summary-content">
+                     <div class="room-summary">
+                      <div class="room-summary-content">
+                     <h4>Booking Summary</h4>
 
-            <h4>Booking Summary</h4>
-
-            ${
-              bookingDetails.error
-                ? `<p class="room-summary-error">${bookingDetails.error}</p>`
-                : `
+                 ${bookingDetails.error
+                        ? `<p class="room-summary-error">${bookingDetails.error}</p>`
+                        : `
                         <div class="summary-row">
                             <span>Check-in</span>
-                            <strong>
-    ${bookingDetails.checkIn ? formatDate(bookingDetails.checkIn) : "-"}
-</strong>
+                        <strong>
+                           ${bookingDetails.checkIn ? formatDate(bookingDetails.checkIn) : "-"}
+                        </strong>
                         </div>
 
                         <div class="summary-row">
                             <span>Check-out</span>
-                            <strong>
-    ${bookingDetails.checkOut ? formatDate(bookingDetails.checkOut) : "-"}
-</strong>
+                        <strong>
+                          ${bookingDetails.checkOut ? formatDate(bookingDetails.checkOut) : "-"}
+                        </strong>
                         </div>
 
                         <div class="summary-row">
                             <span>Nights</span>
-                            <strong>${bookingDetails.nights || 0}</strong>
+                        <strong>${bookingDetails.nights || 0}</strong>
                         </div>
 
                         <div class="summary-row">
@@ -79,16 +76,16 @@ export function renderRooms(
                             </strong>
                         </div>
                     `
-            }
+                    }
 
-        </div>
-    </div>
-`
+               </div>
+              </div>
+             `
                     : ""
                 }
 
             </article>
         `;
-    })
-    .join("");
+        })
+     .join("");
 }

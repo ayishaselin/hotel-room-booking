@@ -49,14 +49,7 @@ header p {
 
 /* Sections */
 
-.booking-section,
-.summary-section {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
-}
+
 
 .booking-section h2,
 .summary-section h2 {
@@ -69,8 +62,20 @@ header p {
 
 .date-fields {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
     gap: 20px;
+}
+
+.search-button {
+    height: 40px;
+    padding: 0 24px;
+    border: 1px solid #2563eb;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
 }
 
 .form-group {
