@@ -1,10 +1,12 @@
 import { getToday } from "./dateUtils.js";
 
 
-/* Validates check-in and check-out dates */
-
 export function validateDates(checkIn, checkOut) {
-
+    
+    if (!checkIn && !checkOut) {
+        return "Please select a check-in and check-out date.";
+    }
+    
     if (!checkIn) {
         return "Please select a check-in date.";
     }

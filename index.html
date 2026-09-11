@@ -1,169 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Hotel Room Booking</title>
 
-    <link rel="stylesheet" href="./css/style.css">
-</head>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
 
-<body>
-
+  <body>
     <main>
-        <header>
-            <h1>Hotel Room Booking</h1>
-            <p>
-                Select your dates and choose the perfect room
-                for your stay.
-            </p>
-        </header>
- <!-- ------------------------->
-        <section class="booking-section" aria-labelledby="stay-details-title">
+      <header>
+        <h1>Hotel Room Booking</h1>
+        <p>Select your dates and choose the perfect room for your stay.</p>
+      </header>
+      <!-- ------------------------->
+      <section class="booking-section" aria-labelledby="stay-details-title">
+        <h2 id="stay-details-title">Stay Details</h2>
 
-    <h2 id="stay-details-title">Stay Details</h2>
-
-    <div class="date-fields">
-
-        <div class="form-group">
+        <div class="date-fields">
+          <div class="form-group">
             <label for="check-in">Check-in</label>
 
-            <input
-                type="date"
-                id="check-in"
-                name="check-in"
-            >
-        </div>
+            <input type="date" id="check-in" name="check-in" />
+          </div>
 
-        <div class="form-group">
+          <div class="form-group">
             <label for="check-out">Check-out</label>
 
-            <input
-                type="date"
-                id="check-out"
-                name="check-out"
-            >
+            <input type="date" id="check-out" name="check-out" />
+          </div>
         </div>
 
-    </div>
+        <p
+          id="error-message"
+          class="error-message"
+          role="alert"
+          aria-live="polite"
+        ></p>
 
-    <p
-        id="error-message"
-        class="error-message"
-        role="alert"
-        aria-live="polite"
-    ></p>
+        <button type="button" id="search-rooms" class="search-button">
+          Search Rooms
+        </button>
+      </section>
+      <!-------------------------------------------->
+      <section
+        id="rooms-section"
+        class="booking-section hidden"
+        aria-labelledby="rooms-title"
+      >
+        <h2 id="rooms-title">Available Rooms</h2>
 
-    <button
-        type="button"
-        id="search-rooms"
-        class="search-button"
-    >
-        Search Rooms
-    </button>
-
-</section>
-<!-------------------------------------------->
-<section
-    id="rooms-section"
-    class="booking-section hidden"
-    aria-labelledby="rooms-title"
->
-    <h2 id="rooms-title">Available Rooms</h2>
-
-    <div class="room-filters">
-
-        <div class="filter-group">
-            <label for="room-type-filter">
-                Room Type
-            </label>
+        <div class="room-filters">
+          <div class="filter-group">
+            <label for="room-type-filter"> Room Type </label>
 
             <select id="room-type-filter">
-                <option value="all">All Room Types</option>
-                <option value="Deluxe Room">Deluxe Room</option>
-                <option value="Executive Suite">Executive Suite</option>
-                <option value="Family Room">Family Room</option>
+              <option value="all">All Room Types</option>
+              <option value="Deluxe Room">Deluxe Room</option>
+              <option value="Executive Suite">Executive Suite</option>
+              <option value="Family Room">Family Room</option>
             </select>
-        </div>
+          </div>
 
-        <div class="filter-group">
-            <label for="guest-filter">
-                Guests
-            </label>
+          <div class="filter-group">
+            <label for="guest-filter"> Guests </label>
 
             <select id="guest-filter">
-                <option value="all">Any Number</option>
-                <option value="1">1 Guest</option>
-                <option value="2">2 Guests</option>
-                <option value="3">3 Guests</option>
-                <option value="4">4 Guests</option>
+              <option value="all">Any Number</option>
+              <option value="1">1 Guest</option>
+              <option value="2">2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
             </select>
+          </div>
         </div>
 
-    </div>
+        <div id="room-list"></div>
 
-    <div id="room-list"></div>
+        <p id="no-rooms-message" class="no-rooms-message hidden">
+          No rooms match your selected filters.
+        </p>
+      </section>
+      <!-------------------------------------------->
 
-    <p
-        id="no-rooms-message"
-        class="no-rooms-message hidden"
-    >
-        No rooms match your selected filters.
-    </p>
+      <section
+        id="booking-summary"
+        class="summary-section hidden"
+        aria-labelledby="summary-title"
+      >
+        <h2 id="summary-title">Booking Summary</h2>
 
-</section>
-<!-------------------------------------------->
-
-        <section
-    id="booking-summary"
-    class="summary-section hidden"
-    aria-labelledby="summary-title"
->
-    <h2 id="summary-title">Booking Summary</h2>
-
-    <div class="summary-details">
-
-        <div class="summary-row">
+        <div class="summary-details">
+          <div class="summary-row">
             <span>Room</span>
             <strong id="summary-room"></strong>
-        </div>
+          </div>
 
-        <div class="summary-row">
+          <div class="summary-row">
             <span>Check-in</span>
             <strong id="summary-check-in"></strong>
-        </div>
+          </div>
 
-        <div class="summary-row">
+          <div class="summary-row">
             <span>Check-out</span>
             <strong id="summary-check-out"></strong>
-        </div>
+          </div>
 
-        <div class="summary-row">
+          <div class="summary-row">
             <span>Nights</span>
             <strong id="summary-nights"></strong>
-        </div>
+          </div>
 
-        <div class="summary-row">
+          <div class="summary-row">
             <span>Price per night</span>
             <strong id="summary-price"></strong>
+          </div>
         </div>
 
-    </div>
-
-    <div class="summary-total">
-        <span>Total</span>
-        <strong id="summary-total"></strong>
-    </div>
-</section>
-<!-------------------------------------------->
-
+        <div class="summary-total">
+          <span>Total</span>
+          <strong id="summary-total"></strong>
+        </div>
+      </section>
+      <!-------------------------------------------->
     </main>
 
-    <script
-        type="module"
-        src="./js/app.js"
-    ></script>
-
-</body>
+    <script type="module" src="./js/app.js"></script>
+  </body>
 </html>

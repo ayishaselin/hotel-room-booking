@@ -1,234 +1,173 @@
 import { rooms } from "./data/rooms.js";
 import { renderRooms } from "./ui/roomRenderer.js";
-import { getToday, calculateNights} from "./utils/dateUtils.js";
+import { getToday, calculateNights } from "./utils/dateUtils.js";
 import { calculateTotal } from "./utils/bookingUtils.js";
 import { validateDates } from "./utils/validation.js";
-import { showBookingSummary, hideBookingSummary } from "./ui/bookingSummary.js";
 
 const roomTypeFilter = document.querySelector("#room-type-filter");
 const guestFilter = document.querySelector("#guest-filter");
-const noRoomsMessage =  document.querySelector("#no-rooms-message");
-
+const noRoomsMessage = document.querySelector("#no-rooms-message");
 const roomList = document.querySelector("#room-list");
 const roomsSection = document.querySelector("#rooms-section");
 const checkInInput = document.querySelector("#check-in");
 const checkOutInput = document.querySelector("#check-out");
 const searchRoomsButton = document.querySelector("#search-rooms");
-const errorMessage =  document.querySelector("#error-message");
-const bookingSummary =  document.querySelector("#booking-summary");
+const errorMessage = document.querySelector("#error-message");
 
 let selectedRoomCode = null;
+
 let visibleRooms = [];
 
 /* Initial Setup */
 
 const today = getToday();
-
 checkInInput.min = today;
 checkOutInput.min = today;
 
 roomsSection.classList.add("hidden");
-
-hideBookingSummary(bookingSummary);
-
-
-checkInInput.addEventListener(
-    "change",
-    handleDateChange
-);
-
-checkOutInput.addEventListener(
-    "change",
-    handleDateChange
-);
-
-searchRoomsButton.addEventListener(
-    "click",
-    handleSearchRooms
-);
-
-roomList.addEventListener(
-    "click",
-    handleRoomSelection
-);
-
-roomTypeFilter.addEventListener(
- "change",
-    handleFilterChange
-);
-
-guestFilter.addEventListener(
-    "change",
-    handleFilterChange
-);
+checkInInput.addEventListener("change", handleDateChange);
+checkOutInput.addEventListener("change", handleDateChange);
+searchRoomsButton.addEventListener("click", handleSearchRooms);
+roomList.addEventListener("click", handleRoomSelection);
+roomTypeFilter.addEventListener("change", handleFilterChange);
+guestFilter.addEventListener("change", handleFilterChange);
 
 
 function handleDateChange() {
-    const checkIn = checkInInput.value;
+  const checkIn = checkInInput.value;
 
-    if (checkIn) {
-        checkOutInput.min = checkIn;
-    } else {
-        checkOutInput.min = getToday();
-    }
+  if (checkIn) {
+    checkOutInput.min = checkIn;
+  } else {
+    checkOutInput.min = getToday();
+  }
 
-    clearError();
+  clearError();
+  roomsSection.classList.add("hidden");
+  selectedRoomCode = null;
+}
+
+function handleSearchRooms() {
+  const checkIn = checkInInput.value;
+  const checkOut = checkOutInput.value;
+
+  const dateError = validateDates(checkIn, checkOut);
+
+  if (dateError) {
+    showError(dateError);
 
     roomsSection.classList.add("hidden");
 
-    selectedRoomCode = null;
+    return;
+  }
 
-    hideBookingSummary(bookingSummary);
+  clearError();
+
+  selectedRoomCode = null;
+  visibleRooms = rooms;
+  roomTypeFilter.value = "all";
+  guestFilter.value = "all";
+
+  renderRooms(visibleRooms, roomList, selectedRoomCode);
+
+  roomsSection.classList.remove("hidden");
+
+
 }
 
 
-function handleSearchRooms() {
-    const checkIn = checkInInput.value;
-    const checkOut = checkOutInput.value;
+function getBookingDetails() {
+  const checkIn = checkInInput.value;
+  const checkOut = checkOutInput.value;
 
-    const dateError = validateDates(
-        checkIn,
-        checkOut
-    );
+  const error = validateDates(checkIn, checkOut);
 
-    if (dateError) {
-        showError(dateError);
+  if (error) {
+    return {
+      error,
+      checkIn,
+      checkOut,
+      nights: 0,
+      total: 0,
+    };
+  }
 
-        roomsSection.classList.add("hidden");
+  const nights = calculateNights(checkIn, checkOut);
 
-        hideBookingSummary(bookingSummary);
+  const selectedRoom = rooms.find((room) => room.code === selectedRoomCode);
 
-        return;
-    }
+  const total = selectedRoom
+    ? calculateTotal(nights, selectedRoom.pricePerNight)
+    : 0;
+
+  return {
+    error: null,
+    checkIn,
+    checkOut,
+    nights,
+    total,
+  };
 
 
-    clearError();
 
-    selectedRoomCode = null;
-    visibleRooms = rooms;
-    roomTypeFilter.value = "all";
-guestFilter.value = "all";
-
-    renderRooms(
-        rooms,
-        roomList,
-        selectedRoomCode
-    );
-
-    roomsSection.classList.remove("hidden");
-
-    hideBookingSummary(bookingSummary);
 }
-
-
 function handleRoomSelection(event) {
-    const button =
-        event.target.closest("[data-room-code]");
+  const button = event.target.closest("[data-room-code]");
 
-    if (!button) {
-        return;
-    }
+  if (!button) {
+    return;
+  }
 
-    const roomCode =
-        button.dataset.roomCode;
+  const roomCode = button.dataset.roomCode;
 
-    if (roomCode === selectedRoomCode) {
-        return;
-    }
+  if (roomCode === selectedRoomCode) {
+    selectedRoomCode = null;
 
-    selectedRoomCode = roomCode;
+    renderRooms(visibleRooms, roomList, selectedRoomCode);
 
-    renderRooms(
-    visibleRooms,
-    roomList,
-    selectedRoomCode
-);
+    return;
+  }
 
-   
-    updateBooking();
-}
+  selectedRoomCode = roomCode;
 
-
-function updateBooking() {
-    const checkIn = checkInInput.value;
-    const checkOut = checkOutInput.value;
-
-    const selectedRoom = rooms.find(
-        room => room.code === selectedRoomCode
-    );
-
-    if (!selectedRoom) {
-        return;
-    }
-
-    const nights = calculateNights(
-        checkIn,
-        checkOut
-    );
-
-    const total = calculateTotal(
-        nights,
-        selectedRoom.pricePerNight
-    );
-
-    showBookingSummary({
-        summaryElement: bookingSummary,
-        room: selectedRoom,
-        checkIn,
-        checkOut,
-        nights,
-        total
-    });
+  renderRooms(visibleRooms, roomList, selectedRoomCode, getBookingDetails());
 }
 
 function handleFilterChange() {
-    const roomType = roomTypeFilter.value;
-    const guests = guestFilter.value;
+  const roomType = roomTypeFilter.value;
+  const guests = guestFilter.value;
 
-    visibleRooms = rooms.filter(room => {
+  visibleRooms = rooms.filter((room) => {
+    const matchesRoomType = roomType === "all" || room.type === roomType;
 
-        const matchesRoomType =
-            roomType === "all" ||
-            room.type === roomType;
+    const matchesGuests = guests === "all" || room.maxGuests >= Number(guests);
 
-        const matchesGuests =
-            guests === "all" ||
-            room.maxGuests >= Number(guests);
+    return matchesRoomType && matchesGuests;
+  });
 
-        return matchesRoomType && matchesGuests;
-    });
+  const selectedRoomStillVisible = visibleRooms.some(
+    (room) => room.code === selectedRoomCode,
+  );
 
+  if (!selectedRoomStillVisible) {
+    selectedRoomCode = null;
+  }
 
-    const selectedRoomStillVisible =
-        visibleRooms.some(
-            room => room.code === selectedRoomCode
-        );
+  renderRooms(visibleRooms, roomList, selectedRoomCode, getBookingDetails());
 
-    if (!selectedRoomStillVisible) {
-        selectedRoomCode = null;
-        hideBookingSummary(bookingSummary);
-    }
-
-    renderRooms(
-        visibleRooms,
-        roomList,
-        selectedRoomCode
-    );
-
-    if (visibleRooms.length === 0) {
-        noRoomsMessage.classList.remove("hidden");
-    } else {
-        noRoomsMessage.classList.add("hidden");
-    }
+  if (visibleRooms.length === 0) {
+    noRoomsMessage.classList.remove("hidden");
+  } else {
+    noRoomsMessage.classList.add("hidden");
+  }
 }
 
 function showError(message) {
-    errorMessage.textContent = message;
-    errorMessage.classList.add("visible");
+  errorMessage.textContent = message;
+  errorMessage.classList.add("visible");
 }
 
-
 function clearError() {
-    errorMessage.textContent = "";
-    errorMessage.classList.remove("visible");
+  errorMessage.textContent = "";
+  errorMessage.classList.remove("visible");
 }
