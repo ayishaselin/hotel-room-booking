@@ -3,9 +3,12 @@
 A simple and responsive hotel room booking interface built with HTML, CSS, and JavaScript.
 
 ## Live Demo
-[https://hotel-booking-selin.netlify.app](https://hotel-booking-selin.netlify.app)
+
 https://hotel-booking-selin.netlify.app
-https://github.com/ayishaselin/hotel-room-booking.git
+
+## Source Code
+
+https://github.com/ayishaselin/hotel-room-booking
 
 ## Tech Stack
 
